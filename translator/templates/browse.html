@@ -1,0 +1,11 @@
+<html>
+<body>
+    <ul>
+        {{range $ind, $col := .data}} <!-- 遍历字符串数组切片 -->
+        <!--<li>{{$col.Id}}</li>  将每个元素作为列表的一行显示 -->
+		<li>{{$col.Text}}</li>
+		<li>{{$col.Translate}}</li>
+        {{end}}
+    </ul>
+</body>
+</html>

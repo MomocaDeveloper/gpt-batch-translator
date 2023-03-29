@@ -1,0 +1,67 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+API	services/loadbalancer/loadbalancer.go	/^type API struct {$/;"	t
+Answer	services/qdrant.go	/^type Answer struct{$/;"	t
+BuildMessageText	services/translator.go	/^func (t *Translator) BuildMessageText(start, stop int) string {$/;"	f
+ChatGPT	services/gpt3.go	/^type ChatGPT struct {$/;"	t
+ChatGPTChoiceItem	services/gpt3.go	/^type ChatGPTChoiceItem struct {$/;"	t
+ChatGPTRequestBody	services/gpt3.go	/^type ChatGPTRequestBody struct {$/;"	t
+ChatGPTResponseBody	services/gpt3.go	/^type ChatGPTResponseBody struct {$/;"	t
+Completions	services/gpt3.go	/^func (gpt ChatGPT) Completions(msg []Messages) (resp Messages, err error) {$/;"	f
+Config	initialization/config.go	/^type Config struct {$/;"	t
+CreateAdditionPrompt	services/noun.go	/^func CreateAdditionPrompt(nounMap map[string]string)(string, error){$/;"	f
+CreateAdditionPrompt1	services/qdrant.go	/^func CreateAdditionPrompt1(){$/;"	f
+Download	routers/common.go	/^func Download(c *gin.Context){$/;"	f
+GenerateImage	services/gpt3.go	/^func (gpt ChatGPT) GenerateImage(prompt string, size string, n int) ([]string, error) {$/;"	f
+GenerateOneImage	services/gpt3.go	/^func (gpt ChatGPT) GenerateOneImage(prompt string, size string) (string, error) {$/;"	f
+GetAPI	services/loadbalancer/loadbalancer.go	/^func (lb *LoadBalancer) GetAPI() *API {$/;"	f
+GetAPIs	services/loadbalancer/loadbalancer.go	/^func (lb *LoadBalancer) GetAPIs() []*API {$/;"	f
+GetBaseNoun	services/excel.go	/^func GetBaseNoun(inputFile string)(map[string]string, error){$/;"	f
+GetFileNames	utils/common.go	/^func GetFileNames(typ string)[]string{$/;"	f
+GetMentionedNoun	services/noun.go	/^func GetMentionedNoun(content string, nounMap map[string]string)map[string]string{$/;"	f
+GetSearchResult	services/qdrant.go	/^func GetSearchResult(sentences string)([]Answer, error){$/;"	f
+GetTempPrompt	services/translator.go	/^func GetTempPrompt()string{$/;"	f
+ImageGenerationRequestBody	services/gpt3.go	/^type ImageGenerationRequestBody struct {$/;"	t
+ImageGenerationResponseBody	services/gpt3.go	/^type ImageGenerationResponseBody struct {$/;"	t
+LoadBalancer	services/loadbalancer/loadbalancer.go	/^type LoadBalancer struct {$/;"	t
+LoadConfig	initialization/config.go	/^func LoadConfig(cfg string) *Config {$/;"	f
+Message	test.go	/^type Message struct {$/;"	t
+Messages	services/gpt3.go	/^type Messages struct {$/;"	t
+NewChatGPT	services/gpt3.go	/^func NewChatGPT(config initialization.Config) *ChatGPT {$/;"	f
+NewLoadBalancer	services/loadbalancer/loadbalancer.go	/^func NewLoadBalancer(keys []string) *LoadBalancer {$/;"	f
+NewTranslator	services/translator.go	/^func NewTranslator(input, output *map[int]string, base *map[string]string) *Translator {$/;"	f
+ParseTranslateResponse	services/translator.go	/^func (t *Translator) ParseTranslateResponse(respStr string){$/;"	f
+Ping	routers/common.go	/^func Ping(c *gin.Context){$/;"	f
+Progress	services/progress.go	/^type Progress struct{$/;"	t
+ReadFromFile	services/excel.go	/^func ReadFromFile(inputFile string) (map[int]string, error){$/;"	f
+RegisterAPI	services/loadbalancer/loadbalancer.go	/^func (lb *LoadBalancer) RegisterAPI(key string) {$/;"	f
+SearchResult	services/qdrant.go	/^type SearchResult  struct{$/;"	t
+SetAvailability	services/loadbalancer/loadbalancer.go	/^func (lb *LoadBalancer) SetAvailability(key string, available bool) {$/;"	f
+SetAvailabilityForAll	services/loadbalancer/loadbalancer.go	/^func (lb *LoadBalancer) SetAvailabilityForAll(available bool) {$/;"	f
+Task	services/progress.go	/^type Task struct{$/;"	t
+TranslateMultiLines	services/translator.go	/^func (t *Translator) TranslateMultiLines(gpt *ChatGPT, start, stop int)error{$/;"	f
+TranslateSingleLine	services/translator.go	/^func TranslateSingleLine(gpt *ChatGPT, sentence string)(string, error){$/;"	f
+Translator	services/translator.go	/^type Translator struct {$/;"	t
+WriteIntoFile	services/excel.go	/^func WriteIntoFile(outputFile string, transResult map[int]string) error {$/;"	f
+availableAPIs	services/loadbalancer/loadbalancer.go	/^	var availableAPIs []*API$/;"	v
+b64Pool	services/gpt3.go	/^	var b64Pool []string$/;"	v
+dirPath	utils/common.go	/^	var dirPath string$/;"	v
+doRequest	services/gpt3.go	/^func (gpt ChatGPT) doRequest(url, method string,$/;"	f
+err	services/gpt3.go	/^	var err error$/;"	v
+filePath	routers/common.go	/^	var filePath string$/;"	v
+getProgress	templates/index.html	/^		function getProgress() {$/;"	f
+getViperBoolValue	initialization/config.go	/^func getViperBoolValue(key string, defaultValue bool) bool {$/;"	f
+getViperIntValue	initialization/config.go	/^func getViperIntValue(key string, defaultValue int) int {$/;"	f
+getViperStringArray	initialization/config.go	/^func getViperStringArray(key string, defaultValue []string) []string {$/;"	f
+getViperStringValue	initialization/config.go	/^func getViperStringValue(key string, defaultValue string) string {$/;"	f
+main	main.go	/^func main(){$/;"	f
+main	test.go	/^func main() {$/;"	f
+result	services/qdrant.go	/^	var result SearchResult$/;"	v
+result	test.go	/^	var result map[string]interface{}$/;"	v
+sendRequest	services/gpt3.go	/^func (gpt ChatGPT) sendRequest(link, method string,$/;"	f
+startTranslate	main.go	/^func startTranslate(input, output, basic string)error {$/;"	f
+uploadFile	templates/index.html	/^		function uploadFile() {$/;"	f

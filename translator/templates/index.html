@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>translator</title>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style type="text/css">
+		body{
+			margin: 0;
+			padding: 0;
+			height: 100vh;
+			display: flex;
+			flex-wrap: wrap;
+		}
+		#left-top{
+			background-color: #ffcc66; /*喜欢的颜色*/
+			flex: 1 1 50%;
+			height: 50%;
+		}
+		#left-bottom{
+			background-color: #6699cc; /*喜欢的颜色*/
+			flex: 1 1 50%;
+			height: 50%;
+		}
+		#right-top{
+			background-color: #ff6666; /*喜欢的颜色*/
+			flex: 1 1 50%;
+			height: 50%;
+		}
+		#right-bottom{
+			background-color: #66cccc; /*喜欢的颜色*/
+			flex: 1 1 50%;
+			height: 50%;
+		}
+		.progress-bar {
+			width: 80%;
+			height: 30px;
+			background-color: #f2f2f2;
+			border-radius: 5px;
+			margin: 20px auto;
+			position: relative;
+		}
+
+		.progress {
+			height: 100%;
+			border-radius: 5px;
+			background-color: #4CAF50;
+			position: absolute;
+			top: 0;
+			left: 0;
+			text-align: center;
+			line-height: 30px;
+			color: white;
+		}
+
+		.progress-label {
+			position: absolute;
+			top: 0;
+			left: 50%;
+			height: 30px;
+			line-height: 30px;
+			padding-left: 10px;
+			font-size: 16px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	<div id="left-top">
+		<form>
+			<input type="file" id="myFile" name="filename">
+			<br><br>
+			<button type="button" onclick="uploadFile()">Upload</button>
+		</form>
+	</div>
+	<div id="left-bottom">
+		{{range $key, $value := .Progress}}
+			<div class="progress-label">{{$key}}</div>
+			<div class="progress-bar" id="{{$key}}-bar">
+				<div class="progress" style="width:{{$value}}%;" >{{$value}}%</div>
+			</div>
+		{{end}}
+	</div>
+	<div id="right-top">
+		<ul>
+			{{ range $ind, $uploadFile := .UploadFile }}
+				<li><a href="/download?type=upload&file={{ $uploadFile }}">{{ $uploadFile }}</a>&nbsp&nbsp<a href="/translate?file={{$uploadFile}}">translate</a></li>
+			{{ end }}
+		</ul>
+	</div>
+	<div id="right-bottom">
+		<ul>
+			{{ range $ind, $downloadFile := .DownloadFile}}
+			<li><a href="/browse?file={{ $downloadFile }}">{{ $downloadFile }}</a>&nbsp&nbsp<a href="/download?type=download&file={{$downloadFile}}">download</a>&nbsp&nbsp<a href="/delete?file={{$downloadFile}}">delete</a></li>
+			{{ end }}
+		</ul>
+	</div>
+  
+	<script>
+		function uploadFile() {
+			var fileInput = document.getElementById("myFile");
+			var file = fileInput.files[0];
+			var formData = new FormData();
+			formData.append("file", file);
+			formData.append("typ", "source");
+			fileData = formData
+
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4) {
+					if (xhr.status === 200) {
+						alert("File uploaded successfully!");
+					} else {
+						alert("Error uploading file.");
+					}
+				}
+			};
+			xhr.open("POST", "/upload");
+			xhr.send(formData);
+			
+		}
+		
+		function getProgress() {
+			fetch("/progress")
+				.then(response => response.json())
+				.then(data => {
+					console.log(data);
+					for (let key in data) {
+						let progress = data[key];
+						let barName = "#"+`${key}`+"-bar"
+						let progressBar = document.querySelector(barName);
+						console.log(barName, progressBar)
+						if (progressBar) {
+							console.log(`${progress}`)
+							progressBar.querySelector('div.progress').style.width = `${progress}%`;
+							progressBar.querySelector('div.progress').innerText = `${progress}%`;
+						}
+					}
+				});
+		}
+
+		setInterval(getProgress, 3000);
+	</script>
+</body>
+</html>
