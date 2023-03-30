@@ -12,3 +12,5 @@ A simple Python script that uploads an Excel file from translateClient/upload, a
 go语言用来连接gptAPI的服务端部分，原本是打算上传下载等功能都写在页面的，奈何我们webUI太糟糕，只能将这部分当做服务器功能来做。请在config.yaml配置自己的openai的APIkey，然后执行go run main.go<br>
 <br>
 The server side of the Go language is used to connect to the GPT API. Originally, it was planned to write all the functions such as uploading and downloading on the webpage. However, due to our poor web UI, we can only treat this part as a server function. Please configure your own OpenAI API key in config.yaml and then execute "go run main.go".
+
+connect us:developers@momoca.net
