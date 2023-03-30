@@ -23,7 +23,7 @@ func startTranslate(input, keyword, character string, progress *Progress)error {
 	}
 	totalLine := result.CalcTotalLine()
 	progress.CreateNewPool(input, 10, totalLine)
-	conf := initialization.LoadConfig("../config.yaml")
+	conf := initialization.LoadConfig("./config.yaml")
 	gpt := NewChatGPT(*conf)
 	keywordDict, _ := GetBaseNoun(keyword)
 	characterDict, _ := GetBaseCharacter(character)

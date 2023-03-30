@@ -25,8 +25,7 @@ func LoadConfig(cfg string) *Config {
 	//fmt.Println(string(content))
 
 	config := &Config{
-		OpenaiApiKeys:              []string{"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"},
-		//OpenaiApiKeys:              getViperStringArray("OPENAI_KEY", nil),
+		OpenaiApiKeys:              getViperStringArray("OPENAI_KEY", nil),
 		//OpenaiApiUrl:               getViperStringValue("API_URL", "https://api.openai.com"),
 		OpenaiApiUrl:               "https://api.openai.com",
 		HttpProxy:					"",
