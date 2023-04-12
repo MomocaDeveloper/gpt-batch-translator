@@ -8,6 +8,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+
+
 type Config struct {
 	OpenaiApiKeys              []string
 	OpenaiApiUrl               string

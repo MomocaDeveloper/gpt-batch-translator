@@ -11,6 +11,8 @@ type Cell struct{
 	Source string 
 	Target string 
 	Require string
+	Role string
+	SecTarget string
 }
 
 type Content struct{
@@ -27,7 +29,14 @@ type ExcelObj struct{
 	TargetCol string
 	RequireCol string
 	RoleCol string
+	RoleMap map[string]int
+	SecTargetCol string
 	Contents []*Content
+}
+
+type characterDes struct{
+    roleDes string
+    roleTranslateDes string
 }
 
 func ParseFullFile(file string) (*ExcelObj, error){
@@ -39,6 +48,7 @@ func ParseFullFile(file string) (*ExcelObj, error){
 	}
 	resp := &ExcelObj{
 		Name:file,
+		RoleMap : make(map[string]int),
 	}
 
 	sheets := f.GetSheetList()
@@ -76,10 +86,15 @@ func ParseFullFile(file string) (*ExcelObj, error){
 					resp.RoleCol = colName
 				}
 			}
+			if strings.Contains(cellVal, "二次修改"){
+				if resp.SecTargetCol == ""{
+					resp.SecTargetCol = colName
+				}
+			}
 		}
 
 		
-		require := ""
+		
 		for i, row := range rows{
 			if len(row) == 0{
 				continue
@@ -89,36 +104,33 @@ func ParseFullFile(file string) (*ExcelObj, error){
 				continue
 			}
 			source,_ := f.GetCellValue("sheet1", fmt.Sprintf("%s%d", resp.SourceCol, i+1))
-			target,_ := f.GetCellValue("sheet1", fmt.Sprintf("%s%d", resp.TargetCol, i+1))
-			newRequire,_ := f.GetCellValue("sheet1", fmt.Sprintf("%s%d", resp.RequireCol, i+1))
-			role,_ := f.GetCellValue("sheet1", fmt.Sprintf("%s%d", resp.RoleCol, i+1))
-			if newRequire != ""{
-				require = newRequire
+			if len(source)==0{
+				continue
 			}
-			//新的段落 longer than 30 lines will auto create new content
+			target,_ := f.GetCellValue("sheet1", fmt.Sprintf("%s%d", resp.TargetCol, i+1))
+			if len(target)!=0{
+				continue
+			}
+			require,_ := f.GetCellValue("sheet1", fmt.Sprintf("%s%d", resp.RequireCol, i+1))
+			role,_ := f.GetCellValue("sheet1", fmt.Sprintf("%s%d", resp.RoleCol, i+1))
+			secTarget,_ := f.GetCellValue("sheet1", fmt.Sprintf("%s%d", resp.SecTargetCol, i+1))
+
 			curLength := len(resp.Contents)
-			if len(resp.Contents)==0||newRequire!=""||role!=""{
-				tmpContent := &Content{
+			curInd, exist := resp.RoleMap[role]
+			if !exist||len(resp.Contents[curInd].Cells)>=20 {
+				resp.RoleMap[role] = curLength
+				resp.Contents = append(resp.Contents, &Content{
 					Id : i+1,
-					Require : require,
 					Role : role,
-				}
-				resp.Contents = append(resp.Contents, tmpContent)
-				curLength += 1
-			}else if len(resp.Contents[curLength-1].Cells)>=30{
-				lastContent := resp.Contents[curLength-1]
-				tmpContent := &Content{
-					Id : i+1,
-					Require : lastContent.Require,
-					Role : lastContent.Role,
-				}
-				resp.Contents = append(resp.Contents, tmpContent)
-				curLength += 1
+					Require : require,
+				})
+				curInd = curLength
+				curLength += 1	
 			}
 			tmpCell := Cell{
-				i+1,source,target,require,
+				i+1,source,target,require,role,secTarget,
 			}
-			resp.Contents[curLength-1].Cells = append(resp.Contents[curLength-1].Cells, tmpCell)
+			resp.Contents[curInd].Cells = append(resp.Contents[curInd].Cells, tmpCell)
 		}
 	}
 	return resp, nil
@@ -133,7 +145,8 @@ func WriteIntoFile(obj ExcelObj) error {
 	f.SetCellValue(sheetId, fmt.Sprintf("%s1", obj.SourceCol), "原文")
 	f.SetCellValue(sheetId, fmt.Sprintf("%s1", obj.TargetCol), "输出")
 	f.SetCellValue(sheetId, fmt.Sprintf("%s1", obj.RequireCol), "翻译要求")
-
+	f.SetCellValue(sheetId, fmt.Sprintf("%s1", obj.RoleCol), "角色")
+	f.SetCellValue(sheetId, fmt.Sprintf("%s1", obj.SecTargetCol), "二次修改")
 
 	for _, content := range obj.Contents{
 		for _, cell := range content.Cells{
@@ -150,6 +163,15 @@ func WriteIntoFile(obj ExcelObj) error {
 			require := cell.Require
 			requireId := fmt.Sprintf("%s%d", obj.RequireCol, id)
 			f.SetCellValue(sheetId, requireId, require)
+			
+			role := cell.Role
+			roleId := fmt.Sprintf("%s%d", obj.RoleCol, id)
+			f.SetCellValue(sheetId, roleId, role)
+
+			secTarget := cell.SecTarget
+			secTargetId := fmt.Sprintf("%s%d", obj.SecTargetCol, id)
+			f.SetCellValue(sheetId, secTargetId, secTarget)
+			fmt.Println("WriteIntoFile:", id, secTargetId, secTarget)
 		}
 	}
 	if err := f.SaveAs(outputFile); err != nil {
@@ -195,10 +217,10 @@ func GetBaseNoun(file string)(map[string]string, error){
 	return resultMap, nil
 }
 
-func GetBaseCharacter(file string)(map[string]string, error){
+func GetBaseCharacter(file string)(map[string]characterDes, error){
 	filePath := fmt.Sprintf("characters/%s", file)
 	f, openErr := excelize.OpenFile(filePath)
-	resultMap := make(map[string]string)
+	resultMap := make(map[string]characterDes)
 	if openErr != nil{
 		fmt.Println("read character from excel fail", file, openErr)
 		return resultMap, openErr
@@ -218,8 +240,16 @@ func GetBaseCharacter(file string)(map[string]string, error){
 			if len(row[1])==0{
 				continue
 			}
-			pmt := fmt.Sprintf("要翻译的内容是一段对话，讲话者是%s。%s的人物设定：%s", row[0], row[0], row[1])
-			resultMap[row[0]] = pmt
+			transDesc := ""
+			if len(row) >=3 && len(row[2])!=0{
+				transDesc = row[2]
+				fmt.Println("read character check:", row[0], transDesc)
+			}
+			c := characterDes{
+                roleDes: row[1],
+                roleTranslateDes: transDesc,
+            }
+            resultMap[row[0]] = c
 		}   
 	}   
 	return resultMap, nil

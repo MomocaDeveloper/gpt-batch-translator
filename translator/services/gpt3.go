@@ -145,12 +145,13 @@ requestBody interface{}, responseBody interface{}) error {
 	return err
 }
 
-func (gpt ChatGPT) Completions(msg []Messages) (resp Messages, err error) {
+func (gpt ChatGPT) Completions(msg []Messages, temp float32) (resp Messages, err error) {
+	fmt.Println("sendmsg", msg)
 	requestBody := ChatGPTRequestBody{
 		Model:            engine,
 		Messages:         msg,
 		MaxTokens:        maxTokens,
-		Temperature:      temperature,
+		Temperature:      temp,
 		TopP:             1,
 		FrequencyPenalty: 0,
 		PresencePenalty:  0,
