@@ -25,7 +25,7 @@ func CreateNounPrompt(nounMap *map[string]string)(string, error){
 		fmt.Println("CreateAdditionPrompt try marshal nounMap fail", marshalErr)
 		return "", marshalErr
 	}
-	prompt := fmt.Sprintf("\n对以下json串中出现的中文词汇，使用我给出的英文作为翻译结果\n%s\n", jsonStr)
+	prompt := fmt.Sprintf("对以下json串中出现的中文词汇，尽量使用我给出的英文作为翻译结果，保证不影响上述规则的基础上进行翻译，不要向我解释说明，也不要给我原文。\n%s", jsonStr)
 	//prompt := fmt.Sprintf("\nFor the Chinese vocabulary that appears in the following JSON string, please use the English translations that I provide.\n%s\n", jsonStr)
 	return prompt, nil
 }
